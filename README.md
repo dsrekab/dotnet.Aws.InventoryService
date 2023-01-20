@@ -1,0 +1,1 @@
+# dotnet.Aws.InventoryService
