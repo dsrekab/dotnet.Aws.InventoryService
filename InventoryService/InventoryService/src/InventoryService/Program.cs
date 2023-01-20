@@ -26,7 +26,7 @@ if (inventoryService == null)
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-app.MapGet("/GetItems", () => "Miminal API - GetItems");
+app.MapGet("/GetItems", async () => await inventoryService.GetInventoryItem());
 
 app.MapPost("/AddItem", () => "Miminal API - AddItem");
 app.MapPost("/AddItemCount", () => "Miminal API - AddItemCount");

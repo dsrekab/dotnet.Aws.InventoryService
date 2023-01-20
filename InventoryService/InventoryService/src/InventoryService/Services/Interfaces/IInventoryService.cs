@@ -2,5 +2,6 @@
 {
     public interface IInventoryService
     {
+        public Task GetInventoryItem();
     }
 }
