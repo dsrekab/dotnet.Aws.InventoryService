@@ -1,5 +1,6 @@
 using InventoryService;
 using InventoryService.Exceptions;
+using InventoryService.Models;
 using InventoryService.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,9 +27,10 @@ if (inventoryService == null)
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-app.MapGet("/GetItems", async () => await inventoryService.GetInventoryItem());
+app.MapGet("/GetAllInventoryItems", async () => await inventoryService.GetAllInventoryItems());
+app.MapGet("/GetInventoryItem", async (int? inventoryId, string? upc) => await inventoryService.GetSingleInventoryItemByUpc(inventoryId, upc));
 
-app.MapPost("/AddItem", () => "Miminal API - AddItem");
+app.MapPost("/AddItem", async (Inventory inventoryItem) => await inventoryService.AddInventoryItem(inventoryItem));
 app.MapPost("/AddItemCount", () => "Miminal API - AddItemCount");
 
 app.MapPut("/UpdateItem", () => "Miminal API - UpdateItem");
