@@ -130,5 +130,58 @@ namespace InventoryServiceTests.Unit
                 .Should().ThrowAsync<InventoryServiceException>()
                 .WithMessage("You must supply an inventoryId or a Upc to select a single InventoryItem.");
         }
+
+        [Fact]
+        public async Task UpdateItem_ThrowsException_WhenRequestedItemIsInvalid()
+        {
+            await _sut.Invoking(m => m.UpdateInventoryItem(new Inventory()))
+                .Should().ThrowAsync<InventoryServiceException>()
+                .WithMessage("You must provide an Inventory Item to Update");
+        }
+
+        [Fact]
+        public async Task UpdateItem_ThrowsException_WhenRequestedItemDoesNotExist()
+        {
+            _mockInventoryRepo.Setup(m => m.GetItemByUpc("16263646"))
+                .ReturnsAsync((Inventory)null);
+
+            await _sut.Invoking(m => m.UpdateInventoryItem(new Inventory { Upc = "16263646" }))
+                .Should().ThrowAsync<InventoryServiceException>()
+                .WithMessage("Upc 16263646 does not exist in the inventory database.");
+        }
+
+        [Fact]
+        public async Task UpdateItem_SetsQuantity_WhenRequestedItemIsValid()
+        {
+            var testInventoryItem = new Inventory
+            {
+                InventoryId = 17,
+                Upc = "17273747",
+                Quantity = 7
+            };
+
+            _mockInventoryRepo.Setup(m => m.GetItemByUpc("17273747"))
+                .ReturnsAsync(testInventoryItem);
+
+            testInventoryItem.Quantity = 12;
+
+            _mockInventoryRepo.Setup(m => m.UpdateItem(testInventoryItem));
+
+            var actual = await _sut.UpdateInventoryItem(testInventoryItem);
+
+            actual.Should().NotBeNull();
+            actual.InventoryId.Should().Be(17);
+            actual.Quantity.Should().Be(12);
+        }
+
+        [Fact]
+        public async Task DeleteItem_Deletes()
+        {
+            _mockInventoryRepo.Setup(m => m.DeleteItem(18));
+
+            await _sut.DeleteInventoryItem(new Inventory { InventoryId=18});
+
+            _mockInventoryRepo.Verify();
+        }
     }
 }

@@ -21,7 +21,10 @@ namespace InventoryService.Services
             await _inventoryRepository.AddItem(inventoryItem);
 
             return await _inventoryRepository.GetItemByUpc(inventoryItem.Upc);
-        }            
+        }
+
+        public async Task DeleteInventoryItem(Inventory inventoryItem)
+            => await _inventoryRepository.DeleteItem(inventoryItem.InventoryId);
 
         public Task<IEnumerable<Inventory>> GetAllInventoryItems()
             => _inventoryRepository.GetAll();
@@ -41,6 +44,15 @@ namespace InventoryService.Services
             throw new InventoryServiceException("You must supply an inventoryId or a Upc to select a single InventoryItem.");
         }
 
+        public async Task<Inventory> UpdateInventoryItem(Inventory inventoryItem)
+        {
+            await VerifyInventoryItemForUpdate(inventoryItem);
+
+            await _inventoryRepository.UpdateItem(inventoryItem);
+
+            return await _inventoryRepository.GetItemByUpc(inventoryItem.Upc);
+        }
+
         private async Task VerifyInventoryItemForAdd(Inventory inventoryItem)
         {
             if (string.IsNullOrWhiteSpace(inventoryItem.Upc))
@@ -53,6 +65,21 @@ namespace InventoryService.Services
             if (existing != null)
             {
                 throw new InventoryServiceException($"{inventoryItem.Upc} already exists in the Inventory Database.");
+            }
+        }
+
+        private async Task VerifyInventoryItemForUpdate(Inventory inventoryItem)
+        {
+            if (inventoryItem == null || string.IsNullOrEmpty(inventoryItem.Upc))
+            {
+                throw new InventoryServiceException("You must provide an Inventory Item to Update");
+            }
+
+            var existing = await _inventoryRepository.GetItemByUpc(inventoryItem.Upc);
+
+            if (existing==null)
+            {
+                throw new InventoryServiceException($"Upc {inventoryItem.Upc} does not exist in the inventory database.");
             }
         }
     }

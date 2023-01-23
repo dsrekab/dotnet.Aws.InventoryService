@@ -31,12 +31,9 @@ app.MapGet("/GetAllInventoryItems", async () => await inventoryService.GetAllInv
 app.MapGet("/GetInventoryItem", async (int? inventoryId, string? upc) => await inventoryService.GetSingleInventoryItem(inventoryId, upc));
 
 app.MapPost("/AddItem", async (Inventory inventoryItem) => await inventoryService.AddInventoryItem(inventoryItem));
-app.MapPost("/AddItemCount", () => "Miminal API - AddItemCount");
 
-app.MapPut("/UpdateItem", () => "Miminal API - UpdateItem");
-app.MapPut("/UpdateItemCount", () => "Miminal API - UpdateItemCount");
+app.MapPut("/UpdateItem", async (Inventory inventoryItem) => await inventoryService.UpdateInventoryItem(inventoryItem));
 
-app.MapDelete("/DeleteItem", () => "Miminal API - DeleteItem");
-
+app.MapDelete("/DeleteItem", async (Inventory inventoryItem) => await inventoryService.DeleteInventoryItem(inventoryItem));
 
 app.Run();

@@ -6,7 +6,11 @@ namespace InventoryService.Services.Interfaces
     {
         Task<IEnumerable<Inventory>> GetAllInventoryItems();
         Task<Inventory> GetSingleInventoryItem(int? inventoryId, string? upc);
-        
+
         Task<Inventory> AddInventoryItem(Inventory inventoryItem);
+
+        Task<Inventory> UpdateInventoryItem(Inventory inventoryItem);
+
+        Task DeleteInventoryItem(Inventory inventoryItem);
     }
 }

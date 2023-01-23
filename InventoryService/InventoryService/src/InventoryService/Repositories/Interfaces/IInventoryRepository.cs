@@ -7,6 +7,11 @@ namespace InventoryService.Repositories.Interfaces
         Task<IEnumerable<Inventory>> GetAll();
         Task<Inventory> GetItemByUpc(string upc);
         Task<Inventory> GetItemByInventoryId(int inventoryItemId);
+
         Task AddItem(Inventory item);
+
+        Task UpdateItem(Inventory item);
+
+        Task DeleteItem(int inventoryItemId);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using InventoryService.Exceptions;
 using InventoryService.Models;
 using InventoryService.Repositories.Interfaces;
 using InventoryService.Services.Interfaces;
@@ -81,6 +80,48 @@ namespace InventoryService.Repositories
             catch (MySqlException ex)
             {
                 _logger.LogError(ex, $"Exception caught while executing AddItem for UPC {inventoryItem.Upc } into Inventory database");
+                throw;
+            }
+        }
+
+        public async Task UpdateItem(Inventory inventoryItem)
+        {
+            try
+            {
+                using var cxn = new MySqlConnection(_cxnString);
+                await cxn.ExecuteAsync("UPDATE sys.Inventory SET Upc=@upc, Name=@name, Description=@description, Manufacturer=@manufacturer, Quantity=@quantity, status=@status WHERE InventoryId = @inventoryId",
+                    new
+                    {
+                        inventoryId = inventoryItem.InventoryId,
+                        upc = inventoryItem.Upc,
+                        name = inventoryItem.Name,
+                        description = inventoryItem.Description,
+                        manufacturer = inventoryItem.Manufacturer,
+                        quantity = inventoryItem.Quantity,
+                        status = inventoryItem.Status
+                    });
+            }
+            catch (MySqlException ex)
+            {
+                _logger.LogError(ex, $"Exception caught while executing Update for UPC {inventoryItem.Upc} into Inventory database");
+                throw;
+            }
+        }
+
+        public async Task DeleteItem(int inventoryItemId)
+        {
+            try
+            {
+                using var cxn = new MySqlConnection(_cxnString);
+                await cxn.ExecuteAsync("DELETE FROM sys.Inventory WHERE InventoryId = @inventoryId",
+                    new
+                    {
+                        inventoryId = inventoryItemId
+                    });
+            }
+            catch (MySqlException ex)
+            {
+                _logger.LogError(ex, $"Exception caught while executing Delete for InventoryItemId {inventoryItemId} from Inventory database");
                 throw;
             }
         }
