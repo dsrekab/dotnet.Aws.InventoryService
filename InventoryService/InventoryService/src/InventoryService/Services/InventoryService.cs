@@ -26,7 +26,7 @@ namespace InventoryService.Services
         public Task<IEnumerable<Inventory>> GetAllInventoryItems()
             => _inventoryRepository.GetAll();
 
-        public Task<Inventory> GetSingleInventoryItemByUpc(int? inventoryId, string? upc)
+        public Task<Inventory> GetSingleInventoryItem(int? inventoryId, string? upc)
         {
             if (inventoryId != null)
             {
@@ -38,7 +38,7 @@ namespace InventoryService.Services
                 return _inventoryRepository.GetItemByUpc(upc);
             }
 
-            throw new InventoryServiceException("You must supply an inventoryId or a Upc to select a single InventoryItem");
+            throw new InventoryServiceException("You must supply an inventoryId or a Upc to select a single InventoryItem.");
         }
 
         private async Task VerifyInventoryItemForAdd(Inventory inventoryItem)

@@ -28,7 +28,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapGet("/GetAllInventoryItems", async () => await inventoryService.GetAllInventoryItems());
-app.MapGet("/GetInventoryItem", async (int? inventoryId, string? upc) => await inventoryService.GetSingleInventoryItemByUpc(inventoryId, upc));
+app.MapGet("/GetInventoryItem", async (int? inventoryId, string? upc) => await inventoryService.GetSingleInventoryItem(inventoryId, upc));
 
 app.MapPost("/AddItem", async (Inventory inventoryItem) => await inventoryService.AddInventoryItem(inventoryItem));
 app.MapPost("/AddItemCount", () => "Miminal API - AddItemCount");
