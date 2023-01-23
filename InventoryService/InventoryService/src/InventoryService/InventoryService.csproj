@@ -11,8 +11,10 @@
     <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="1.4.0" />
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="1.5.0" />
     <PackageReference Include="AWS.Logger.AspNetCore" Version="3.3.0" />
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.101.12" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="MySql.Data" Version="8.0.32" />
   </ItemGroup>
 </Project>

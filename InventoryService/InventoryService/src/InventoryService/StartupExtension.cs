@@ -1,4 +1,6 @@
-﻿using InventoryService.Services;
+﻿using InventoryService.Repositories;
+using InventoryService.Repositories.Interfaces;
+using InventoryService.Services;
 using InventoryService.Services.Interfaces;
 
 namespace InventoryService
@@ -8,8 +10,9 @@ namespace InventoryService
         public static void AddInventoryServices(this IServiceCollection services)
         {
             services.AddTransient<IInventoryService, Services.InventoryService>();
-
-            services.AddSingleton<ISecretsManagerService, SecretsManagerService>();
+            
+            services.AddSingleton<IInventoryRepository, InventoryRepository>();
+            services.AddSingleton<ISecretManagerRdsService, SecretManagerRdsService_Inventory>();
         }
     }
 }
