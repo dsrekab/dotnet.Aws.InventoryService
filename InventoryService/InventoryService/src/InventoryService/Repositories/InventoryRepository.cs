@@ -63,12 +63,12 @@ namespace InventoryService.Repositories
             }
         }
 
-        public async Task<Inventory> AddItem(Inventory inventoryItem)
+        public async Task AddItem(Inventory inventoryItem)
         {
             try
             {
                 using var cxn = new MySqlConnection(_cxnString);
-                return await cxn.ExecuteScalarAsync<Inventory>("INSERT INTO sys.Inventory (Upc, Name, Description, Manufacturer, Quantity, Status) VALUES (@upc, @name, @description, @manufacturer, @quantity, @status)",
+                await cxn.ExecuteAsync("INSERT INTO sys.Inventory (Upc, Name, Description, Manufacturer, Quantity, Status) VALUES (@upc, @name, @description, @manufacturer, @quantity, @status)",
                     new { 
                         upc = inventoryItem.Upc,
                         name=inventoryItem.Name,

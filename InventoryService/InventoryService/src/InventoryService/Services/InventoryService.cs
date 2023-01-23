@@ -18,7 +18,9 @@ namespace InventoryService.Services
         {
             await VerifyInventoryItemForAdd(inventoryItem);
 
-            return await _inventoryRepository.AddItem(inventoryItem);
+            await _inventoryRepository.AddItem(inventoryItem);
+
+            return await _inventoryRepository.GetItemByUpc(inventoryItem.Upc);
         }            
 
         public Task<IEnumerable<Inventory>> GetAllInventoryItems()
