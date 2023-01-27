@@ -2,6 +2,8 @@ using FluentAssertions;
 using InventoryService.Exceptions;
 using InventoryService.Models;
 using InventoryService.Repositories.Interfaces;
+using InventoryService.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -10,12 +12,15 @@ namespace InventoryServiceTests.Unit
     public class InventoryServiceTests
     {
         private readonly Mock<IInventoryRepository> _mockInventoryRepo;
+        private readonly Mock<ILogger<IInventoryService>> _mockLogger;
         private readonly InventoryService.Services.InventoryService _sut;
 
         public InventoryServiceTests()
         {
             _mockInventoryRepo = new Mock<IInventoryRepository>();
-            _sut = new InventoryService.Services.InventoryService(_mockInventoryRepo.Object);
+            _mockLogger = new Mock<ILogger<IInventoryService>>();
+
+            _sut = new InventoryService.Services.InventoryService(_mockInventoryRepo.Object, _mockLogger.Object);
         }
 
         [Fact]
@@ -33,7 +38,7 @@ namespace InventoryServiceTests.Unit
         {
             var testInventoryItem = new Inventory
             {
-                InventoryId = 1,
+                InventoryItemId = 1,
                 Upc = "11223344"
             };
 
@@ -49,7 +54,7 @@ namespace InventoryServiceTests.Unit
         public async Task AddItem_ReturnsAddedItem()
         {
             var testAddInventoryItem = new Inventory { Upc = "11223344" };
-            var testResultInventoryItem = new Inventory { InventoryId = 11, Upc = "11223344" };
+            var testResultInventoryItem = new Inventory { InventoryItemId = 11, Upc = "11223344" };
 
             _mockInventoryRepo.SetupSequence(m => m.GetItemByUpc(testAddInventoryItem.Upc))
                 .ReturnsAsync((Inventory)null)
@@ -60,7 +65,7 @@ namespace InventoryServiceTests.Unit
             var actual = await _sut.AddInventoryItem(testAddInventoryItem);
 
             actual.Should().NotBeNull();
-            actual.InventoryId.Should().Be(11);
+            actual.InventoryItemId.Should().Be(11);
             actual.Upc.Should().BeEquivalentTo(testAddInventoryItem.Upc);
         }
 
@@ -71,13 +76,13 @@ namespace InventoryServiceTests.Unit
                 .ReturnsAsync(new List<Inventory>{
                     new Inventory
                     {
-                        InventoryId = 12,
+                        InventoryItemId = 12,
                         Upc="12223242",
                         Description="TestItem1"
                     },
                     new Inventory
                     {
-                        InventoryId = 13,
+                        InventoryItemId = 13,
                         Upc="13233343",
                         Description="TestItem2"
                     } });
@@ -89,12 +94,12 @@ namespace InventoryServiceTests.Unit
         }
 
         [Fact]
-        public async Task GetItem_ReturnsSingleItem_WhenInventoryIdIsNotNull()
+        public async Task GetItem_ReturnsSingleItem_WhenInventoryItemIdIsNotNull()
         {
-            _mockInventoryRepo.Setup(m => m.GetItemByInventoryId(14))
+            _mockInventoryRepo.Setup(m => m.GetItemByInventoryItemId(14))
                 .ReturnsAsync(new Inventory
                 {
-                    InventoryId = 14,
+                    InventoryItemId = 14,
                     Upc = "14243444",
                     Description = "TestItem4"
                 });
@@ -112,7 +117,7 @@ namespace InventoryServiceTests.Unit
             _mockInventoryRepo.Setup(m => m.GetItemByUpc("15253545"))
                 .ReturnsAsync(new Inventory
                 {
-                    InventoryId = 15,
+                    InventoryItemId = 15,
                     Upc = "15253545",
                     Description = "TestItem5"
                 });
@@ -120,15 +125,15 @@ namespace InventoryServiceTests.Unit
             var actual = await _sut.GetSingleInventoryItem(null, "15253545");
 
             actual.Should().NotBeNull();
-            actual.InventoryId.Should().Be(15);
+            actual.InventoryItemId.Should().Be(15);
         }
 
         [Fact]
-        public async Task GetItem_ThrowsException_WhenBothUpc_AndInventoryId_AreNull()
+        public async Task GetItem_ThrowsException_WhenBothUpc_AndInventoryItemId_AreNull()
         {
             await _sut.Invoking(m => m.GetSingleInventoryItem(null, null))
                 .Should().ThrowAsync<InventoryServiceException>()
-                .WithMessage("You must supply an inventoryId or a Upc to select a single InventoryItem.");
+                .WithMessage("You must supply an InventoryItemId or a Upc to select a single InventoryItem.");
         }
 
         [Fact]
@@ -155,7 +160,7 @@ namespace InventoryServiceTests.Unit
         {
             var testInventoryItem = new Inventory
             {
-                InventoryId = 17,
+                InventoryItemId = 17,
                 Upc = "17273747",
                 Quantity = 7
             };
@@ -170,7 +175,7 @@ namespace InventoryServiceTests.Unit
             var actual = await _sut.UpdateInventoryItem(testInventoryItem);
 
             actual.Should().NotBeNull();
-            actual.InventoryId.Should().Be(17);
+            actual.InventoryItemId.Should().Be(17);
             actual.Quantity.Should().Be(12);
         }
 
@@ -179,7 +184,7 @@ namespace InventoryServiceTests.Unit
         {
             _mockInventoryRepo.Setup(m => m.DeleteItem(18));
 
-            await _sut.DeleteInventoryItem(new Inventory { InventoryId=18});
+            await _sut.DeleteInventoryItem(18);
 
             _mockInventoryRepo.Verify();
         }
