@@ -24,7 +24,7 @@ namespace InventoryService.Repositories
             try
             {
                 using var cxn = new MySqlConnection(_cxnString);
-                return await cxn.QueryAsync<Inventory>("SELECT * FROM sys.Inventory");
+                return await cxn.QueryAsync<Inventory>("SELECT * FROM inventory.InventoryItems");
             }
             catch (MySqlException ex)
             {
@@ -37,7 +37,7 @@ namespace InventoryService.Repositories
             try
             {
                 using var cxn = new MySqlConnection(_cxnString);
-                return await cxn.QuerySingleOrDefaultAsync<Inventory>("SELECT * FROM sys.Inventory where Upc = @upc",
+                return await cxn.QuerySingleOrDefaultAsync<Inventory>("SELECT * FROM inventory.InventoryItems where Upc = @upc",
                     new { upc = upc });
             }
             catch (MySqlException ex)
@@ -47,12 +47,12 @@ namespace InventoryService.Repositories
             }
         }
 
-        public async Task<Inventory> GetItemByInventoryId(int inventoryItemId)
+        public async Task<Inventory> GetItemByInventoryItemId(int inventoryItemId)
         {
             try
             {
                 using var cxn = new MySqlConnection(_cxnString);
-                return await cxn.QuerySingleOrDefaultAsync<Inventory>("SELECT * FROM sys.Inventory where InventoryId = @id",
+                return await cxn.QuerySingleOrDefaultAsync<Inventory>("SELECT * FROM inventory.InventoryItems where InventoryItemId = @id",
                     new {id = inventoryItemId});
             }
             catch (MySqlException ex)
@@ -67,7 +67,7 @@ namespace InventoryService.Repositories
             try
             {
                 using var cxn = new MySqlConnection(_cxnString);
-                await cxn.ExecuteAsync("INSERT INTO sys.Inventory (Upc, Name, Description, Manufacturer, Quantity, Status) VALUES (@upc, @name, @description, @manufacturer, @quantity, @status)",
+                await cxn.ExecuteAsync("INSERT INTO inventory.InventoryItems (Upc, Name, Description, Manufacturer, Quantity, Status) VALUES (@upc, @name, @description, @manufacturer, @quantity, @status)",
                     new { 
                         upc = inventoryItem.Upc,
                         name=inventoryItem.Name,
@@ -89,10 +89,10 @@ namespace InventoryService.Repositories
             try
             {
                 using var cxn = new MySqlConnection(_cxnString);
-                await cxn.ExecuteAsync("UPDATE sys.Inventory SET Upc=@upc, Name=@name, Description=@description, Manufacturer=@manufacturer, Quantity=@quantity, status=@status WHERE InventoryId = @inventoryId",
+                await cxn.ExecuteAsync("UPDATE inventory.InventoryItems SET Upc=@upc, Name=@name, Description=@description, Manufacturer=@manufacturer, Quantity=@quantity, status=@status WHERE InventoryItemId = @inventoryId",
                     new
                     {
-                        inventoryId = inventoryItem.InventoryId,
+                        inventoryId = inventoryItem.InventoryItemId,
                         upc = inventoryItem.Upc,
                         name = inventoryItem.Name,
                         description = inventoryItem.Description,
@@ -113,7 +113,7 @@ namespace InventoryService.Repositories
             try
             {
                 using var cxn = new MySqlConnection(_cxnString);
-                await cxn.ExecuteAsync("DELETE FROM sys.Inventory WHERE InventoryId = @inventoryId",
+                await cxn.ExecuteAsync("DELETE FROM inventory.InventoryItems WHERE InventoryItemId = @inventoryId",
                     new
                     {
                         inventoryId = inventoryItemId

@@ -11,6 +11,6 @@ namespace InventoryService.Services.Interfaces
 
         Task<Inventory> UpdateInventoryItem(Inventory inventoryItem);
 
-        Task DeleteInventoryItem(Inventory inventoryItem);
+        Task DeleteInventoryItem(int inventoryId);
     }
 }

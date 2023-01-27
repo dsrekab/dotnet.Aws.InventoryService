@@ -2,7 +2,7 @@
 {
     public class Inventory
     {
-        public int InventoryId { get; set; }
+        public int InventoryItemId { get; set; }
         public string? Upc { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }

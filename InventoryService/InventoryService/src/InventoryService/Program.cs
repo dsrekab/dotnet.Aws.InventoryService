@@ -27,13 +27,15 @@ if (inventoryService == null)
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-app.MapGet("/GetAllInventoryItems", async () => await inventoryService.GetAllInventoryItems());
-app.MapGet("/GetInventoryItem", async (int? inventoryId, string? upc) => await inventoryService.GetSingleInventoryItem(inventoryId, upc));
+app.MapGet("/InventoryService", () => "InventorySerivce Endpoint is reachable");
 
-app.MapPost("/AddItem", async (Inventory inventoryItem) => await inventoryService.AddInventoryItem(inventoryItem));
+app.MapGet("/InventoryService/GetAllInventoryItems", async () => await inventoryService.GetAllInventoryItems());
+app.MapGet("/InventoryService/GetInventoryItem", async (int? inventoryId, string? upc) => await inventoryService.GetSingleInventoryItem(inventoryId, upc));
 
-app.MapPut("/UpdateItem", async (Inventory inventoryItem) => await inventoryService.UpdateInventoryItem(inventoryItem));
+app.MapPost("/InventoryService/AddItem", async (Inventory inventoryItem) => await inventoryService.AddInventoryItem(inventoryItem));
 
-app.MapDelete("/DeleteItem", async (Inventory inventoryItem) => await inventoryService.DeleteInventoryItem(inventoryItem));
+app.MapPut("/InventoryService/UpdateItem", async (Inventory inventoryItem) => await inventoryService.UpdateInventoryItem(inventoryItem));
+
+app.MapDelete("/InventoryService/DeleteItem", async (int inventoryId) => await inventoryService.DeleteInventoryItem(inventoryId));
 
 app.Run();

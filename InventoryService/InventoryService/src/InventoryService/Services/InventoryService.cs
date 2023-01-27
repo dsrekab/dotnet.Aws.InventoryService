@@ -8,48 +8,69 @@ namespace InventoryService.Services
     public class InventoryService : IInventoryService
     {
         private readonly IInventoryRepository _inventoryRepository;
+        private readonly ILogger<IInventoryService> _logger;
 
-        public InventoryService(IInventoryRepository inventoryRepository)
+        public InventoryService(IInventoryRepository inventoryRepository, ILogger<IInventoryService> logger)
         {
             _inventoryRepository = inventoryRepository;
+            _logger = logger;
         }
 
         public async Task<Inventory> AddInventoryItem(Inventory inventoryItem)
         {
+            _logger.LogInformation("Verifying Inventory Item prior to adding Upc {Upc}...", inventoryItem.Upc);
             await VerifyInventoryItemForAdd(inventoryItem);
 
+            _logger.LogInformation("Adding Inventory Item for Upc {Upc}...", inventoryItem.Upc);
             await _inventoryRepository.AddItem(inventoryItem);
 
+            _logger.LogInformation("Inventory Item for Upc {Upc} added to database...", inventoryItem.Upc);
             return await _inventoryRepository.GetItemByUpc(inventoryItem.Upc);
         }
 
-        public async Task DeleteInventoryItem(Inventory inventoryItem)
-            => await _inventoryRepository.DeleteItem(inventoryItem.InventoryId);
+        public async Task DeleteInventoryItem(int inventoryId)
+        {
+            _logger.LogInformation("Deleting Inventory Item {InventoryItemId} from database...", inventoryId);
+
+            await _inventoryRepository.DeleteItem(inventoryId);
+        }
 
         public Task<IEnumerable<Inventory>> GetAllInventoryItems()
-            => _inventoryRepository.GetAll();
+        {
+            _logger.LogInformation("Getting all InventoryItems from database...");
+
+            var retVal = _inventoryRepository.GetAll();
+
+            return retVal;
+        }
+
 
         public Task<Inventory> GetSingleInventoryItem(int? inventoryId, string? upc)
         {
             if (inventoryId != null)
             {
-                return _inventoryRepository.GetItemByInventoryId(inventoryId.Value);
+                _logger.LogInformation("Getting Inventory Item for InventoryItemId {InventoryId}...", inventoryId);
+                return _inventoryRepository.GetItemByInventoryItemId(inventoryId.Value);
             }
 
             if (upc != null)
             {
+                _logger.LogInformation("Getting Inventory Item for Upc {Upc}...", upc);
                 return _inventoryRepository.GetItemByUpc(upc);
             }
 
-            throw new InventoryServiceException("You must supply an inventoryId or a Upc to select a single InventoryItem.");
+            throw new InventoryServiceException("You must supply an inventoryItemId or a Upc to select a single InventoryItem.");
         }
 
         public async Task<Inventory> UpdateInventoryItem(Inventory inventoryItem)
         {
+            _logger.LogInformation("Verifying Inventory Item prior to updating Upc {Upc}...", inventoryItem.Upc);
             await VerifyInventoryItemForUpdate(inventoryItem);
 
+            _logger.LogInformation("Updating Inventory Item for Upc {Upc}...", inventoryItem.Upc);
             await _inventoryRepository.UpdateItem(inventoryItem);
 
+            _logger.LogInformation("Inventory Item for Upc {Upc} updated in database...", inventoryItem.Upc);
             return await _inventoryRepository.GetItemByUpc(inventoryItem.Upc);
         }
 
