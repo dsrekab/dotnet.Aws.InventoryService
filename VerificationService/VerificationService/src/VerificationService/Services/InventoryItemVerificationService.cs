@@ -5,7 +5,7 @@ namespace VerificationService.Services
 {
     public class InventoryItemVerificationService : IVerificationService<InventoryItem>
     {
-        public Task<bool> VerifyAllRequiredFields(InventoryItem itemToVerify)
+        public Task<bool> VerifyRequiredFields(InventoryItem itemToVerify)
         {
             return Task.FromResult(!string.IsNullOrWhiteSpace(itemToVerify.Upc) && !string.IsNullOrWhiteSpace(itemToVerify.Name));
         }
