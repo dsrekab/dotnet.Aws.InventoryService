@@ -10,6 +10,7 @@
   "configuration": "Release",
   "Handler": "VerificationService",
   "Runtime": "dotnet6",
-  "function-memory-size": 256,
-  "function-timeout": 30
+  "function-timeout": 30,
+  "function-memory-size": 256
+
 }

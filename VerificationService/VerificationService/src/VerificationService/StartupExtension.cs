@@ -8,7 +8,7 @@ namespace VerificationService
     {
         public static void AddVerificationServices(this IServiceCollection services)
         {
-            services.AddTransient<IVerificationService<InventoryItem>, InventoryItemVerificationService>();
+            services.AddSingleton<IVerificationService<InventoryItem>, InventoryItemVerificationService>();
         }
     }
 }

@@ -27,6 +27,6 @@ app.UseAuthorization();
 
 app.MapGet("/", () => "VerificationService root Url is reachable.");
 
-app.MapPost("/VerifyInventoryItem", async (InventoryItem item) => await inventoryItemVerificationService.VerifyRequiredFields(item));
+app.MapPost("/VerifyInventoryItem", async (InventoryItem item) => await inventoryItemVerificationService.VerifyAllRequiredFields(item));
 
 app.Run();
