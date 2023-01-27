@@ -2,6 +2,6 @@
 {
     public interface IVerificationService<T>
     {
-        Task<bool> VerifyRequiredFields(T itemToVerify);
+        Task<bool> VerifyAllRequiredFields(T itemToVerify);
     }
 }
